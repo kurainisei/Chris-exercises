@@ -42,7 +42,7 @@ public class Movement : MonoBehaviour {
 
 
 		//activate and deactivate pogo
-		if (Input.GetButtonDown("Fire1")&&(Input.GetAxis("Vertical")< -_deadZone)&&_checker.isGrounded==false)
+		if (Input.GetButton("Fire1")&&(Input.GetAxis("Vertical")< -_deadZone)&&_checker.isGrounded==false)
 		{
 			_pogoStick.gameObject.SetActive(true);
 			_isPogoActive=true;
