@@ -12,13 +12,15 @@ public class Movement : MonoBehaviour {
 	private GroundChecker _checker;
 	private Transform _pogoStick;
 	private bool _isPogoActive=false;
+	private bool _isJumping =false;
+	private float _jumpSpeedLimit;
 
 
 	// Use this for initialization
 	void Start () {
 		_deadZone = 0.01f;
 		_checker = GetComponentInChildren<GroundChecker>();
-
+		_jumpSpeedLimit = Physics2D.gravity.y/10;
 		//cache and deactivate pogo stick
 		_pogoStick = transform.Find("PogoStick");
 		_pogoStick.gameObject.SetActive(false);
@@ -37,9 +39,21 @@ public class Movement : MonoBehaviour {
 		//jump mechanic
 		if (_checker.isGrounded&&Input.GetButtonDown("Jump"))
 		{
+			//start jumping
+			_isJumping=true;
 			rigidbody2D.AddForce(new Vector2 (0,jumpForce), ForceMode2D.Impulse);
 		}
 
+		//reduce jump velocity if is jumping and Jump is released
+		if (_isJumping&&!Input.GetButton("Jump")&&rigidbody2D.velocity.y>_jumpSpeedLimit)
+		{
+			rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x,_jumpSpeedLimit);
+		}
+
+		//set _isJumping to false if the character is falling
+		if (_isJumping==true&&_checker.isGrounded==false&&rigidbody2D.velocity.y<0) _isJumping=false;
+
+		Debug.Log (_isJumping);
 
 		//activate and deactivate pogo
 		if (Input.GetButton("Fire1")&&(Input.GetAxis("Vertical")< -_deadZone)&&_checker.isGrounded==false)
@@ -65,4 +79,5 @@ public class Movement : MonoBehaviour {
 		else
 			rigidbody2D.velocity=new Vector2 (speed*_movement, rigidbody2D.velocity.y);
 	}
+
 }
