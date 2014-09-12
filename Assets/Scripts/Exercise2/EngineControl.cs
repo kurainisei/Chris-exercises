@@ -2,8 +2,9 @@
 using System.Collections;
 
 public class EngineControl : MonoBehaviour {
-	public bool isOn=false;
+	public int isOn=0;
 	public string operateKey;
+	public string reverseKey;
 	public float engineSpeed;
 	private Transform _boat;
 	private Rigidbody _boatRB;
@@ -16,17 +17,23 @@ public class EngineControl : MonoBehaviour {
 	void Update()
 	{
 		if (Input.GetButton(operateKey))
-			isOn=true;
+			isOn=1;
+		else if (Input.GetButton(reverseKey))
+			isOn=-1;
 		else
-			isOn=false;
+			isOn=0;
 	}
 
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (isOn)
+		if (isOn==1)
 		{
 			_boatRB.AddForceAtPosition(transform.forward*engineSpeed,transform.position);
+		}
+		else if (isOn==-1)
+		{
+			_boatRB.AddForceAtPosition(-transform.forward*engineSpeed/5,transform.position);
 		}
 	}
 }
